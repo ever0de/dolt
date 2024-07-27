@@ -16,7 +16,10 @@ package benchmark
 
 import (
 	"context"
+	"fmt"
 	"math/rand"
+	"os"
+	"runtime/pprof"
 	"testing"
 )
 
@@ -52,13 +55,29 @@ func BenchmarkTypesMediumWrites(b *testing.B) {
 }
 
 func BenchmarkProllyLargeWrites(b *testing.B) {
-	benchmarkProllyMapUpdate(b, 1_000_000, 1)
+	benchmarkProllyMapUpdate(b, 50_000_000, 10_000)
 }
 
 func benchmarkProllyMapUpdate(b *testing.B, size, k uint64) {
+	cpuF, err := os.Create("./cpu.pprof")
+	if err != nil {
+		panic(err)
+	}
+	err = pprof.StartCPUProfile(cpuF)
+	if err != nil {
+		panic(err)
+	}
+	defer func() {
+		pprof.StopCPUProfile()
+		cpuF.Close()
+	}()
+
 	bench := generateProllyBench(b, size)
 	b.ReportAllocs()
 	b.ResetTimer()
+
+	cnt, _ := bench.m.Count()
+	fmt.Println("prolly height, cnt", bench.m.Height(), cnt)
 
 	b.Run("benchmark new format writes", func(b *testing.B) {
 		ctx := context.Background()

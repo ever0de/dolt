@@ -169,4 +169,6 @@ require (
 
 replace github.com/dolthub/dolt/go/gen/proto/dolt/services/eventsapi => ./gen/proto/dolt/services/eventsapi
 
-go 1.22.2
+go 1.22
+
+toolchain go1.22.1

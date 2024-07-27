@@ -2,3 +2,5 @@
 *.pprof
 *.out
 *.pdf
+
+tmp

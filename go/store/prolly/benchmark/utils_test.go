@@ -25,6 +25,8 @@ import (
 	"go.etcd.io/bbolt"
 
 	"github.com/dolthub/dolt/go/store/chunks"
+	"github.com/dolthub/dolt/go/store/constants"
+	"github.com/dolthub/dolt/go/store/nbs"
 	"github.com/dolthub/dolt/go/store/pool"
 	"github.com/dolthub/dolt/go/store/prolly"
 	"github.com/dolthub/dolt/go/store/prolly/tree"
@@ -51,7 +53,8 @@ func generateProllyBench(b *testing.B, size uint64) prollyBench {
 	b.StopTimer()
 	defer b.StartTimer()
 	ctx := context.Background()
-	ns := newTestNodeStore()
+	// ns := newTestNodeStore()
+	ns := newLocalStorageNodeStore()
 
 	kd := val.NewTupleDescriptor(
 		val.Type{Enc: val.Uint64Enc, Nullable: false},
@@ -84,6 +87,21 @@ var shared = pool.NewBuffPool()
 func newTestNodeStore() tree.NodeStore {
 	ts := &chunks.TestStorage{}
 	return tree.NewNodeStore(ts.NewView())
+}
+
+func newLocalStorageNodeStore() tree.NodeStore {
+	os.MkdirAll("./tmp", os.ModePerm)
+	store, err := nbs.NewLocalStore(
+		context.TODO(),
+		constants.FormatDoltString,
+		"./tmp",
+		16<<20, // 16MB
+		nbs.NewUnlimitedMemQuotaProvider(),
+	)
+	if err != nil {
+		panic(err)
+	}
+	return tree.NewNodeStore(store)
 }
 
 func generateProllyTuples(kd, vd val.TupleDesc, size uint64) [][2]val.Tuple {
