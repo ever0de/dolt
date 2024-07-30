@@ -46,11 +46,11 @@ import (
 )
 
 var (
-	count    = flag.Int("c", 10, "Number of iterations to run")
+	count    = flag.Int("c", 1000, "Number of iterations to run")
 	dataSize = flag.Uint64("data", 4096, "MiB of data to test with")
-	mtMiB    = flag.Uint64("mem", 64, "Size in MiB of memTable")
-	useNBS   = flag.String("useNBS", "", "Existing Database to use for not-WriteNovel benchmarks")
-	toNBS    = flag.String("toNBS", "", "Write to an NBS store in the given directory")
+	mtMiB    = flag.Uint64("mem", 128, "Size in MiB of memTable")
+	useNBS   = flag.String("useNBS", "yes", "Existing Database to use for not-WriteNovel benchmarks")
+	toNBS    = flag.String("toNBS", "./tmp", "Write to an NBS store in the given directory")
 	useAWS   = flag.String("useAWS", "", "Name of existing Database to use for not-WriteNovel benchmarks")
 	toAWS    = flag.String("toAWS", "", "Write to an NBS store in AWS")
 	toFile   = flag.String("toFile", "", "Write to a file in the given directory")
@@ -79,10 +79,10 @@ func main() {
 	profile.RegisterProfileFlags(flag.CommandLine)
 	flag.Parse(true)
 
-	if flag.NArg() < 1 {
-		flag.Usage()
-		os.Exit(1)
-	}
+	// if flag.NArg() < 1 {
+	// 	flag.Usage()
+	// 	os.Exit(1)
+	// }
 
 	pb := panickingBencher{*count}
 
