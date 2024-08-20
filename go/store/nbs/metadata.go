@@ -133,23 +133,25 @@ func GetStorageMetadata(path string) (StorageMetadata, error) {
 			arcPath := filepath.Join(oldgen, arcName)
 			_, err := os.Stat(arcPath)
 			if err == nil {
-				// reader for the path. State. call
-				reader, fileSize, err := openReader(arcPath)
-				if err != nil {
-					return StorageMetadata{}, err
-				}
+				panic("archive files not supported")
 
-				arcMetadata, err := newArchiveMetadata(reader, fileSize)
-				if err != nil {
-					return StorageMetadata{}, err
-				}
+				// // reader for the path. State. call
+				// reader, fileSize, err := openReader(arcPath)
+				// if err != nil {
+				// 	return StorageMetadata{}, err
+				// }
 
-				artifacts = append(artifacts, StorageArtifact{
-					id:          hash.Parse(tfName),
-					path:        arcPath,
-					storageType: Archive,
-					arcMetadata: arcMetadata,
-				})
+				// arcMetadata, err := newArchiveMetadata(reader, fileSize)
+				// if err != nil {
+				// 	return StorageMetadata{}, err
+				// }
+
+				// artifacts = append(artifacts, StorageArtifact{
+				// 	id:          hash.Parse(tfName),
+				// 	path:        arcPath,
+				// 	storageType: Archive,
+				// 	arcMetadata: arcMetadata,
+				// })
 			} else {
 				// any error is bad here. If the files don't exist, then the manifest is no good.
 				return StorageMetadata{}, err

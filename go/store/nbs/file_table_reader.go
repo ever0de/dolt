@@ -78,9 +78,13 @@ func newFileTableReader(ctx context.Context, dir string, h hash.Hash, chunkCount
 	afExists, err := archiveFileExists(ctx, dir, h)
 	if err != nil {
 		return nil, err
-	} else if afExists {
-		return newArchiveChunkSource(ctx, dir, h, chunkCount, q)
 	}
+	if afExists {
+		panic("archive files not supported")
+	}
+	//  if afExists {
+	// 	return newArchiveChunkSource(ctx, dir, h, chunkCount, q)
+	// }
 	return nil, errors.New(fmt.Sprintf("table file %s/%s not found", dir, h.String()))
 }
 

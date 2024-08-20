@@ -18,11 +18,11 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/DataDog/zstd"
 	"github.com/dolthub/dolt/go/cmd/dolt/cli"
 	"github.com/dolthub/dolt/go/libraries/doltcore/env"
 	"github.com/dolthub/dolt/go/libraries/utils/argparser"
 
-	"github.com/dolthub/gozstd"
 	"github.com/fatih/color"
 )
 
@@ -55,7 +55,12 @@ func (cmd ZstdCmd) Hidden() bool {
 }
 
 func (cmd ZstdCmd) Exec(ctx context.Context, commandStr string, args []string, dEnv *env.DoltEnv, cliCtx cli.CliContext) int {
-	fmt.Fprintf(color.Error, "Hello, world! compressed is %v\n", gozstd.Compress(nil, []byte("Hello, world!")))
+	compressed, err := zstd.Compress(nil, []byte("Hello, world!"))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Fprintf(color.Error, "Hello, world! compressed is %v\n", compressed)
 
 	return 0
 }
